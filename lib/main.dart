@@ -34,20 +34,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final ScrollController _firstController = ScrollController();
+  final ScrollController controllerScroll = ScrollController();
 
   String location = 'Null, Press Button';
-  String Address = 'search';
 
   Future<Position> _getGeoLocationPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
-    // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
       await Geolocator.openLocationSettings();
       return Future.error('Location services are disabled.');
     }
@@ -59,48 +54,12 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
   }
-
-  /*
-
-Text(
-              'Coordinates Points',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              location,
-              style: TextStyle(color: Colors.black, fontSize: 16),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'ADDRESS',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text('$Address'),
-            ElevatedButton(
-                onPressed: () async {
-                  Position position = await _getGeoLocationPosition();
-                  print(position);
-                },
-                child: Text('Get Location'))
-
-  */
 
   @override
   Widget build(BuildContext context) {
@@ -159,6 +118,12 @@ Text(
                       style: TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold))),
             ),
+            ElevatedButton(
+                onPressed: () async {
+                  Position position = await _getGeoLocationPosition();
+                  print(position);
+                },
+                child: Text('Get Location (Temporario)')),
             new Container(
                 margin: const EdgeInsets.only(top: 10.0, left: 10.0),
                 child: CarouselSlider(
@@ -290,7 +255,7 @@ Text(
                 width: double.infinity,
                 child: ListView.builder(
                     shrinkWrap: true,
-                    controller: _firstController,
+                    controller: controllerScroll,
                     itemCount: 10,
                     itemBuilder: (BuildContext context, int index) {
                       return Card(
