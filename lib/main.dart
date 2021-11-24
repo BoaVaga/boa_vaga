@@ -1,9 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 void main() {
   runApp(MyApp());
+}
+
+class GQlConfiguration {
+  static HttpLink httplink = HttpLink(
+    "http://localhost:5000/graphql",
+  );
+
+  GraphQLClient myQlClient() {
+    return GraphQLClient(link: httplink, cache: GraphQLCache());
+  }
+}
+
+class Queries {
+  buscarEstacioProx(lat, long) {
+    return '''query ProcurarEstacio {
+  buscarEstacio(coordenadas: "POINT($lat $long)") {
+    success
+    error
+    estacionamentos {
+      id
+      nome
+      telefone
+      endereco {
+        logradouro
+        estado
+        cidade
+        bairro
+        numero
+        cep
+        coordenadas
+    	}
+      foto
+      estaSuspenso
+      estaAberto
+      cadastroTerminado
+      descricao
+      qtdVagaLivre
+      totalVaga
+      horarioPadrao {
+        segundaAbr
+        segundaFec
+        tercaAbr
+        tercaFec
+      }
+      valoresHora {
+        id
+        valor
+        veiculo
+      }
+      horasDivergentes {
+        id
+        data
+        horaAbr
+        horaFec
+      }
+    }
+  }
+}''';
+  }
 }
 
 final List<String> imgList = [
@@ -34,28 +94,52 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final ScrollController controllerScroll = ScrollController();
+  Queries _queries = Queries();
+  GQlConfiguration _graphql = GQlConfiguration();
 
-  String location = 'Null, Press Button';
+  final ScrollController controllerScroll = ScrollController();
+  var jsonResposta;
 
   Future<Position> _getGeoLocationPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      return Future.error('Location services are disabled.');
+      return Position(
+          longitude: 1,
+          latitude: 1,
+          timestamp: DateTime.now(),
+          accuracy: 1,
+          altitude: 1,
+          heading: 1,
+          speed: 1,
+          speedAccuracy: 1);
     }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        return Position(
+            longitude: 1,
+            latitude: 1,
+            timestamp: DateTime.now(),
+            accuracy: 1,
+            altitude: 1,
+            heading: 1,
+            speed: 1,
+            speedAccuracy: 1);
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      return Position(
+          longitude: 1,
+          latitude: 1,
+          timestamp: DateTime.now(),
+          accuracy: 1,
+          altitude: 1,
+          heading: 1,
+          speed: 1,
+          speedAccuracy: 1);
     }
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
@@ -121,7 +205,15 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
                 onPressed: () async {
                   Position position = await _getGeoLocationPosition();
-                  print(position);
+                  var result = await buscarEstacioProx(
+                      position.latitude, position.longitude);
+                  if (result) {
+                    if (jsonResposta["buscarEstacio"]["success"] == true) {
+                      print("mostra os estacionamento");
+                    } else {
+                      mostrarAlertDialogErro(context, "Erro desconhecido");
+                    }
+                  }
                 },
                 child: Text('Get Location (Temporario)')),
             new Container(
@@ -283,6 +375,20 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+  Future buscarEstacioProx(lat, long) async {
+    GraphQLClient _client = _graphql.myQlClient();
+    QueryResult result = await _client.query(
+        QueryOptions(document: gql(_queries.buscarEstacioProx(lat, long))));
+
+    if (result.hasException)
+      return false;
+    else {
+      jsonResposta = result.data;
+      print(jsonResposta);
+      return true;
+    }
+  }
 }
 
 class PageEstacionamento extends StatelessWidget {
@@ -378,4 +484,28 @@ class PageEstacionamento extends StatelessWidget {
           ))
         ])));
   }
+}
+
+mostrarAlertDialogErro(BuildContext context, msgErro) {
+  Widget okButton = ElevatedButton(
+    child: Text("Ok"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  AlertDialog alerta = AlertDialog(
+    title: Text("Erro"),
+    content: Text(msgErro),
+    actions: [
+      okButton,
+    ],
+  );
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alerta;
+    },
+  );
 }
