@@ -9,7 +9,8 @@ void main() {
 
 class GQlConfiguration {
   static HttpLink httplink = HttpLink(
-    "http://localhost:5000/graphql",
+    // "http://localhost:5000/graphql", // HMG Casa
+    "http://192.168.0.77:5000/graphql", 
   );
 
   GraphQLClient myQlClient() {
@@ -66,11 +67,11 @@ class Queries {
   }
 }
 
-final List<String> imgList = [
+final List<String> imgListTemp = [
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6U_U_wC1S1A8cBSPHGhgRDcf2V1U56lZntw&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsQMD02euy61wBhey8NwL42Pc-MNTv5nMZx25lFZHTi0LNjUC-Tl4jOdwPduC8X_wmHuQ&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtKtTC2VBJV9e2q2qVfYvcQ0t-JJupzr2yu2UzajLM37TjX2HkApTuTM2mgqhokSDFGME&usqp=CAU'
 ];
+
+final List<int> estacioProxList = [];
 
 class MyApp extends StatelessWidget {
   @override
@@ -202,21 +203,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold))),
             ),
-            ElevatedButton(
-                onPressed: () async {
-                  Position position = await _getGeoLocationPosition();
-                  var result = await buscarEstacioProx(
-                      position.latitude, position.longitude);
-                  if (result) {
-                    if (jsonResposta["buscarEstacio"]["success"] == true) {
-                      print("mostra os estacionamento");
-                    } else {
-                      mostrarAlertDialogErro(context, "Erro desconhecido");
-                    }
-                  }
-                },
-                child: Text('Get Location (Temporario)')),
-            new Container(
+            new FutureBuilder<bool>(
+                future: buscarEstacioProx(),
+                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting: return new Text('Aguarde');
+                    default:
+                      if (!snapshot.hasError){
+                        return Container(
                 margin: const EdgeInsets.only(top: 10.0, left: 10.0),
                 child: CarouselSlider(
                   options: CarouselOptions(
@@ -229,8 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     autoPlayAnimationDuration: Duration(milliseconds: 3000),
                     viewportFraction: 0.8,
                   ),
-                  items: imgList
-                      .map((item) => Container(
+                  items: estacioProxList.map((item) => Container(
                               child: Center(
                             child: InkWell(
                                 onTap: () {
@@ -256,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                         Radius.circular(15.0),
                                                     topRight:
                                                         Radius.circular(15.0)),
-                                                child: Image.network(item,
+                                                child: Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6U_U_wC1S1A8cBSPHGhgRDcf2V1U56lZntw&usqp=CAU",
                                                     fit: BoxFit.cover,
                                                     width: 1000)),
                                           ),
@@ -276,7 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                       child: FittedBox(
                                                           fit: BoxFit.contain,
                                                           child: Text(
-                                                              'Click Vagas',
+                                                              jsonResposta["buscarEstacio"]["estacionamentos"][item]["nome"],
                                                               style: TextStyle(
                                                                   fontSize: 14,
                                                                   fontWeight:
@@ -295,7 +288,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                               right: 15.0,
                                                               bottom: 10.0),
                                                       child: Text(
-                                                          '(16) 99791-1430',
+                                                          jsonResposta["buscarEstacio"]["estacionamentos"][item]["telefone"],
                                                           style: TextStyle(
                                                               fontSize: 14,
                                                               fontWeight:
@@ -306,7 +299,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                         ]))),
                           )))
                       .toList(),
-                )),
+                ));
+                      }
+                      else
+                        return new Text('Erro: ${snapshot.error}');
+                  }
+                },
+              ),
             Row(children: <Widget>[
               Expanded(
                   flex: 8,
@@ -376,16 +375,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future buscarEstacioProx(lat, long) async {
+  Future<bool> buscarEstacioProx() async {
+    Position position = await _getGeoLocationPosition();
+    
     GraphQLClient _client = _graphql.myQlClient();
     QueryResult result = await _client.query(
-        QueryOptions(document: gql(_queries.buscarEstacioProx(lat, long))));
+        QueryOptions(document: gql(_queries.buscarEstacioProx(position.latitude, position.longitude))));
 
     if (result.hasException)
       return false;
     else {
       jsonResposta = result.data;
-      print(jsonResposta);
+      for (var i = 0; i < jsonResposta["buscarEstacio"]["estacionamentos"].length; i++) {
+        estacioProxList.add(i);
+      }
       return true;
     }
   }
@@ -424,7 +427,7 @@ class PageEstacionamento extends StatelessWidget {
                   enlargeCenterPage: true,
                   viewportFraction: 0.8,
                 ),
-                items: imgList
+                items: imgListTemp
                     .map((item) => Container(
                             child: Center(
                           child: Card(
