@@ -154,44 +154,19 @@ class _MyHomePageState extends State<MyHomePage> {
     LocationPermission permission;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Position(
-          longitude: 1,
-          latitude: 1,
-          timestamp: DateTime.now(),
-          accuracy: 1,
-          altitude: 1,
-          heading: 1,
-          speed: 1,
-          speedAccuracy: 1);
+      return Position(longitude: 1, latitude: 1, timestamp: DateTime.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1);
     }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Position(
-            longitude: 1,
-            latitude: 1,
-            timestamp: DateTime.now(),
-            accuracy: 1,
-            altitude: 1,
-            heading: 1,
-            speed: 1,
-            speedAccuracy: 1);
+        return Position(longitude: 1, latitude: 1, timestamp: DateTime.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1);
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      return Position(
-          longitude: 1,
-          latitude: 1,
-          timestamp: DateTime.now(),
-          accuracy: 1,
-          altitude: 1,
-          heading: 1,
-          speed: 1,
-          speedAccuracy: 1);
+      return Position(longitude: 1, latitude: 1, timestamp: DateTime.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1);
     }
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
   }
 
   @override
@@ -217,11 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             new Container(
               margin: const EdgeInsets.only(top: 10.0, left: 10.0),
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text('Estacionamentos',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold))),
+              child: Align(alignment: Alignment.topLeft, child: Text('Estacionamentos', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
             ),
             /*new Container(
                 margin:
@@ -245,11 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         hintText: 'Buscar'))),*/ // Barra de pesquisa
             new Container(
               margin: const EdgeInsets.only(top: 30.0, left: 10.0),
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text('Sugeridos por sua localização',
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold))),
+              child: Align(alignment: Alignment.topLeft, child: Text('Sugeridos por sua localização', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
             ),
             new FutureBuilder<bool>(
               future: buscarEstacioProx(),
@@ -260,8 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   default:
                     if (!snapshot.hasError) {
                       if (estacioProxList.length == 0) {
-                        return Text(
-                            "Nenhum estacionamento encontrado perto de você");
+                        return Text("Nenhum estacionamento encontrado perto de você");
                       }
                       return Container(
                           margin: const EdgeInsets.only(top: 10.0, left: 10.0),
@@ -273,8 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               autoPlay: true,
                               autoPlayCurve: Curves.fastOutSlowIn,
                               enableInfiniteScroll: true,
-                              autoPlayAnimationDuration:
-                                  Duration(milliseconds: 3000),
+                              autoPlayAnimationDuration: Duration(milliseconds: 3000),
                               viewportFraction: 0.8,
                             ),
                             items: estacioProxList
@@ -284,95 +249,40 @@ class _MyHomePageState extends State<MyHomePage> {
                                           onTap: () {
                                             Navigator.push(
                                               context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => PageEstacionamento(
-                                                      dados: jsonRespostaEstacioProx[
-                                                                  "buscarEstacio"]
-                                                              [
-                                                              "estacionamentos"]
-                                                          [item])),
+                                              MaterialPageRoute(builder: (context) => PageEstacionamento(dados: jsonRespostaEstacioProx["buscarEstacio"]["estacionamentos"][item])),
                                             );
                                           },
                                           child: Card(
                                               shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      const BorderRadius.all(
+                                                  borderRadius: const BorderRadius.all(
                                                 Radius.circular(15.0),
                                               )),
-                                              child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Expanded(
-                                                      child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          15.0),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          15.0)),
-                                                          child: Image.network(
-                                                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6U_U_wC1S1A8cBSPHGhgRDcf2V1U56lZntw&usqp=CAU",
-                                                              fit: BoxFit.cover,
-                                                              width: 1000)),
-                                                    ),
-                                                    Row(children: <Widget>[
-                                                      Expanded(
-                                                          flex: 5,
-                                                          child: Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .topLeft,
-                                                              child: Container(
-                                                                margin: const EdgeInsets
-                                                                        .only(
-                                                                    top: 10.0,
-                                                                    left: 15.0,
-                                                                    right: 15.0,
-                                                                    bottom:
-                                                                        10.0),
-                                                                child: FittedBox(
-                                                                    fit: BoxFit
-                                                                        .contain,
-                                                                    child: Text(
-                                                                        jsonRespostaEstacioProx["buscarEstacio"]["estacionamentos"][item]
-                                                                            [
-                                                                            "nome"],
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                14,
-                                                                            fontWeight:
-                                                                                FontWeight.bold))),
-                                                              ))),
-                                                      Expanded(
-                                                          flex: 5,
-                                                          child: Align(
-                                                            alignment: Alignment
-                                                                .topRight,
-                                                            child: Container(
-                                                                margin: const EdgeInsets
-                                                                        .only(
-                                                                    top: 10.0,
-                                                                    left: 15.0,
-                                                                    right: 15.0,
-                                                                    bottom:
-                                                                        10.0),
-                                                                child: Text(
-                                                                    jsonRespostaEstacioProx["buscarEstacio"]["estacionamentos"]
-                                                                            [
-                                                                            item]
-                                                                        [
-                                                                        "telefone"],
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight.bold))),
-                                                          )),
-                                                    ]),
-                                                  ]))),
+                                              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                                                Expanded(
+                                                  child: ClipRRect(
+                                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+                                                      child: Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6U_U_wC1S1A8cBSPHGhgRDcf2V1U56lZntw&usqp=CAU", fit: BoxFit.cover, width: 1000)),
+                                                ),
+                                                Row(children: <Widget>[
+                                                  Expanded(
+                                                      flex: 5,
+                                                      child: Align(
+                                                          alignment: Alignment.topLeft,
+                                                          child: Container(
+                                                            margin: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 10.0),
+                                                            child: FittedBox(
+                                                                fit: BoxFit.contain, child: Text(jsonRespostaEstacioProx["buscarEstacio"]["estacionamentos"][item]["nome"], style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold))),
+                                                          ))),
+                                                  Expanded(
+                                                      flex: 5,
+                                                      child: Align(
+                                                        alignment: Alignment.topRight,
+                                                        child: Container(
+                                                            margin: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 10.0),
+                                                            child: Text(jsonRespostaEstacioProx["buscarEstacio"]["estacionamentos"][item]["telefone"], style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold))),
+                                                      )),
+                                                ]),
+                                              ]))),
                                     )))
                                 .toList(),
                           ));
@@ -386,11 +296,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   flex: 8,
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: Container(
-                        margin: const EdgeInsets.only(top: 10.0, left: 10.0),
-                        child: Text('Mais estacionamentos',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold))),
+                    child: Container(margin: const EdgeInsets.only(top: 10.0, left: 10.0), child: Text('Mais estacionamentos', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
                   )),
               /*Expanded(
                   flex: 2,
@@ -436,28 +342,16 @@ class _MyHomePageState extends State<MyHomePage> {
                               itemCount: listTodosEstacio.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return Card(
-                                  margin: const EdgeInsets.only(
-                                      top: 10.0, left: 10.0, right: 10.0),
+                                  margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
                                   child: ListTile(
                                     leading: FlutterLogo(size: 72.0),
-                                    title: Text(jsonRespostaTodosEstacio[
-                                            "listEstacionamento"]
-                                        ["estacionamentos"][index]["nome"]),
-                                    subtitle: Text('Vagas disponíveis: ' +
-                                        jsonRespostaTodosEstacio[
-                                                        "listEstacionamento"]
-                                                    ["estacionamentos"][index]
-                                                ["qtdVagaLivre"]
-                                            .toString()),
+                                    title: Text(jsonRespostaTodosEstacio["listEstacionamento"]["estacionamentos"][index]["nome"]),
+                                    subtitle: Text('Vagas disponíveis: ' + jsonRespostaTodosEstacio["listEstacionamento"]["estacionamentos"][index]["qtdVagaLivre"].toString()),
                                     isThreeLine: true,
                                     onTap: () {
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(
-                                            builder: (context) => PageEstacionamento(
-                                                dados: jsonRespostaTodosEstacio[
-                                                        "listEstacionamento"][
-                                                    "estacionamentos"][index])),
+                                        MaterialPageRoute(builder: (context) => PageEstacionamento(dados: jsonRespostaTodosEstacio["listEstacionamento"]["estacionamentos"][index])),
                                       );
                                     },
                                   ),
@@ -480,19 +374,13 @@ class _MyHomePageState extends State<MyHomePage> {
     Position position = await _getGeoLocationPosition();
 
     GraphQLClient _client = _graphql.myQlClient();
-    QueryResult result = await _client.query(QueryOptions(
-        document: gql(_queries.buscarEstacioProx(
-            position.latitude, position.longitude))));
+    QueryResult result = await _client.query(QueryOptions(document: gql(_queries.buscarEstacioProx(position.latitude, position.longitude))));
 
     if (result.hasException)
       return false;
     else {
       jsonRespostaEstacioProx = result.data;
-      for (var i = 0;
-          i <
-              jsonRespostaEstacioProx["buscarEstacio"]["estacionamentos"]
-                  .length;
-          i++) {
+      for (var i = 0; i < jsonRespostaEstacioProx["buscarEstacio"]["estacionamentos"].length; i++) {
         estacioProxList.add(i);
       }
       return true;
@@ -501,18 +389,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<bool> buscarTodosEstacio() async {
     GraphQLClient _client = _graphql.myQlClient();
-    QueryResult result = await _client.query(
-        QueryOptions(document: gql(_queries.buscarTodosEstacionamentos())));
+    QueryResult result = await _client.query(QueryOptions(document: gql(_queries.buscarTodosEstacionamentos())));
 
     if (result.hasException)
       return false;
     else {
       jsonRespostaTodosEstacio = result.data;
-      for (var i = 0;
-          i <
-              jsonRespostaTodosEstacio["listEstacionamento"]["estacionamentos"]
-                  .length;
-          i++) {
+      for (var i = 0; i < jsonRespostaTodosEstacio["listEstacionamento"]["estacionamentos"].length; i++) {
         listTodosEstacio.add(i);
       }
       return true;
@@ -558,58 +441,33 @@ class PageEstacionamento extends StatelessWidget {
                     .map((item) => Container(
                             child: Center(
                           child: Card(
-                              child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                Expanded(
-                                  child: Image.network(item,
-                                      fit: BoxFit.cover, width: 1000),
-                                ),
-                              ])),
+                              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                            Expanded(
+                              child: Image.network(item, fit: BoxFit.cover, width: 1000),
+                            ),
+                          ])),
                         )))
                     .toList(),
               )),
           new Container(
             margin: const EdgeInsets.only(top: 20.0),
-            child: Align(
-                alignment: Alignment.topCenter,
-                child: Text(dados["nome"],
-                    style:
-                        TextStyle(fontSize: 19, fontWeight: FontWeight.bold))),
+            child: Align(alignment: Alignment.topCenter, child: Text(dados["nome"], style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold))),
           ),
           new Container(
             margin: const EdgeInsets.only(top: 15.0),
             child: Align(
                 alignment: Alignment.topCenter,
-                child: Text(
-                    dados["endereco"]["logradouro"] +
-                        "\nNº " +
-                        dados["endereco"]["numero"] +
-                        ", " +
-                        dados["endereco"]["bairro"] +
-                        ", " +
-                        dados["endereco"]["cidade"] +
-                        ' - ' +
-                        dados["endereco"]["estado"],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 15))),
+                child: Text(dados["endereco"]["logradouro"] + "\nNº " + dados["endereco"]["numero"] + ", " + dados["endereco"]["bairro"] + ", " + dados["endereco"]["cidade"] + ' - ' + dados["endereco"]["estado"],
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: 15))),
           ),
           new Container(
             margin: const EdgeInsets.only(top: 15.0),
-            child: Align(
-                alignment: Alignment.topCenter,
-                child: Text('Telefone: ' + dados["telefone"],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 15))),
+            child: Align(alignment: Alignment.topCenter, child: Text('Telefone: ' + dados["telefone"], textAlign: TextAlign.center, style: TextStyle(fontSize: 15))),
           ),
           Expanded(
             child: new Container(
               margin: const EdgeInsets.only(top: 25.0, left: 25.0, right: 25.0),
-              child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Text(dados["descricao"],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 15))),
+              child: Align(alignment: Alignment.topCenter, child: Text(dados["descricao"], textAlign: TextAlign.center, style: TextStyle(fontSize: 15))),
             ),
           ),
           Container(
