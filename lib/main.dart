@@ -223,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold))),
             ),
-            new Container(
+            /*new Container(
                 margin:
                     const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
                 child: TextField(
@@ -242,7 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Icons.search,
                           size: 32.0,
                         ),
-                        hintText: 'Buscar'))),
+                        hintText: 'Buscar'))),*/ // Barra de pesquisa
             new Container(
               margin: const EdgeInsets.only(top: 30.0, left: 10.0),
               child: Align(
@@ -392,7 +392,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold))),
                   )),
-              Expanded(
+              /*Expanded(
                   flex: 2,
                   child: Align(
                     alignment: Alignment.topRight,
@@ -412,7 +412,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         textAlign: TextAlign.center)));
                           },
                         )),
-                  )),
+                  )),*/ // Aqui vai os filtros
             ]),
             new FutureBuilder<bool>(
               future: buscarTodosEstacio(),
@@ -515,7 +515,6 @@ class _MyHomePageState extends State<MyHomePage> {
           i++) {
         listTodosEstacio.add(i);
       }
-      print(listTodosEstacio);
       return true;
     }
   }
