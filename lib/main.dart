@@ -9,7 +9,7 @@ void main() {
 
 class GQlConfiguration {
   static HttpLink httplink = HttpLink(
-    "http://192.168.0.115:5000/graphql",
+    "http://192.168.0.112:5000/graphql",
   );
 
   GraphQLClient myQlClient() {
@@ -190,10 +190,6 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         child: Column(
           children: <Widget>[
-            new Container(
-              margin: const EdgeInsets.only(top: 10.0, left: 10.0),
-              child: Align(alignment: Alignment.topLeft, child: Text('Estacionamentos', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
-            ),
             /*new Container(
                 margin:
                     const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
@@ -214,22 +210,28 @@ class _MyHomePageState extends State<MyHomePage> {
                           size: 32.0,
                         ),
                         hintText: 'Buscar'))),*/ // Barra de pesquisa
-            new Container(
-              margin: const EdgeInsets.only(top: 30.0, left: 10.0),
-              child: Align(alignment: Alignment.topLeft, child: Text('Sugeridos por sua localização', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
-            ),
             new FutureBuilder<bool>(
               future: buscarEstacioProx(),
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
-                    return new Text('Aguarde');
+                    return new Text('');
                   default:
                     if (!snapshot.hasError) {
                       if (estacioProxList.length == 0) {
-                        return Text("Nenhum estacionamento encontrado perto de você");
+                        return Text("");
                       }
                       return Container(
+        child: Column(
+          children: <Widget>[
+            new Container(
+              margin: const EdgeInsets.only(top: 10.0, left: 10.0),
+              child: Align(alignment: Alignment.topLeft, child: Text('Estacionamentos', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+            ),
+            new Container(
+              margin: const EdgeInsets.only(top: 30.0, left: 10.0),
+              child: Align(alignment: Alignment.topLeft, child: Text('Sugeridos por sua localização', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+            ),Container(
                           margin: const EdgeInsets.only(top: 10.0, left: 10.0),
                           child: CarouselSlider(
                             options: CarouselOptions(
@@ -285,7 +287,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                               ]))),
                                     )))
                                 .toList(),
-                          ));
+                          ))]));
                     } else
                       return new Text('Erro: ${snapshot.error}');
                 }
@@ -296,7 +298,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   flex: 8,
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: Container(margin: const EdgeInsets.only(top: 10.0, left: 10.0), child: Text('Mais estacionamentos', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+                    child: Container(margin: const EdgeInsets.only(top: 10.0, left: 10.0), child: Text('Todos os estacionamentos', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
                   )),
               /*Expanded(
                   flex: 2,
