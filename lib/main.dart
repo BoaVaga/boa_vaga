@@ -9,7 +9,7 @@ void main() {
 
 class GQlConfiguration {
   static HttpLink httplink = HttpLink(
-    "http://192.168.0.114:5000/graphql",
+    "http://192.168.0.117:5000/graphql",
   );
 
   GraphQLClient myQlClient() {
@@ -452,8 +452,10 @@ class PageEstacionamento extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0.0,
         ),
-        body: Container(
-            child: Column(children: <Widget>[
+        body: SingleChildScrollView(
+child: Stack(
+    children: <Widget>[
+       Column(children: <Widget>[
           new Container(
               margin: const EdgeInsets.only(top: 10.0, left: 10.0),
               child: CarouselSlider(
@@ -562,7 +564,7 @@ class PageEstacionamento extends StatelessWidget {
                 },
                 child: Text('Voltar', style: TextStyle(fontSize: 18)),
               ))
-        ])));
+        ])])));
   }
 }
 
@@ -590,7 +592,10 @@ mostrarAlertDialogErro(BuildContext context, msgErro) {
   );
 }
 
-String formatHHMMSS(int seconds) {
+String formatHHMMSS(seconds) {
+  if(seconds == null){
+    return "Não definido";
+  }
   if (seconds != 0) {
     int hours = (seconds / 3600).truncate();
     seconds = (seconds % 3600).truncate();
