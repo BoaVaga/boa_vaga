@@ -48,6 +48,16 @@ class Queries {
         segundaFec
         tercaAbr
         tercaFec
+        quartaAbr
+				quartaFec
+				quintaAbr
+				quintaFec				
+				sextaAbr				
+				sextaFec
+				sabadoAbr
+				sabadoFec
+				domingoAbr
+				domingoFec
       }
       valoresHora {
         id
