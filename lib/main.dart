@@ -210,7 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         child: Column(
           children: <Widget>[
-            /*new Container(
+            new Container(
                 margin:
                     const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
                 child: TextField(
@@ -229,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Icons.search,
                           size: 32.0,
                         ),
-                        hintText: 'Buscar'))),*/ // Barra de pesquisa
+                        hintText: 'Buscar'))),
             new FutureBuilder<bool>(
               future: buscarEstacioProx(),
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -321,7 +321,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     alignment: Alignment.topLeft,
                     child: Container(margin: const EdgeInsets.only(top: 10.0, left: 10.0), child: Text('Todos os estacionamentos', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
                   )),
-              /*Expanded(
+              Expanded(
                   flex: 2,
                   child: Align(
                     alignment: Alignment.topRight,
@@ -341,7 +341,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         textAlign: TextAlign.center)));
                           },
                         )),
-                  )),*/ // Aqui vai os filtros
+                  )), // Aqui vai os filtros
             ]),
             new FutureBuilder<bool>(
               future: buscarTodosEstacio(),
